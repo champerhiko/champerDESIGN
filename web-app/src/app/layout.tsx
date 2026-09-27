@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -15,6 +15,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Champer Design",
   description: "Kişisel fotoğraf düzenleme uygulaması",
+  // Dosyalar public/ klasöründe: favicon.ico ve apple-touch-icon.png (180x180)
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0b0b0d",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

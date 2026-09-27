@@ -76,12 +76,12 @@ export default function PreviewCanvas({ canvasRef, source, filter, crop, onCropC
   }
 
   return (
-    <section className="relative flex min-h-64 flex-1 items-center justify-center overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 p-2">
+    <section className="relative flex min-h-64 flex-1 items-center justify-center overflow-hidden rounded-2xl border border-line bg-surface-1 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:16px_16px] p-3 shadow-inner">
       <canvas
         ref={canvasRef}
         aria-label="Fotoğraf önizleme"
         style={{ filter }}
-        className={source ? "max-h-full max-w-full" : "hidden"}
+        className={source ? "animate-fade-up max-h-full max-w-full rounded-md shadow-2xl shadow-black/60" : "hidden"}
       />
       {!source && <p className="text-sm text-neutral-500">Önizleme burada görünecek</p>}
       {source && crop && (
@@ -102,7 +102,7 @@ export default function PreviewCanvas({ canvasRef, source, filter, crop, onCropC
                 key={h}
                 data-handle={h}
                 onPointerDown={(e) => startDrag(e, h)}
-                className={`absolute h-4 w-4 touch-none rounded-sm border-2 border-violet-500 bg-white ${
+                className={`absolute h-4 w-4 touch-none rounded-sm border-2 border-accent bg-white ${
                   h[0] === "n" ? "-top-2" : "-bottom-2"
                 } ${h[1] === "w" ? "-left-2" : "-right-2"} ${h === "nw" || h === "se" ? "cursor-nwse-resize" : "cursor-nesw-resize"}`}
               />
