@@ -9,6 +9,7 @@ type Props = {
   filter: string;
   crop: CropRect | null;
   onCropChange: (r: CropRect) => void;
+  zoom?: number; // 1 = ekrana sığdırılmış boyut
 };
 
 type DragMode = "move" | "nw" | "ne" | "sw" | "se";
@@ -16,7 +17,7 @@ const HANDLES: DragMode[] = ["nw", "ne", "sw", "se"];
 const MIN = 0.05; // en küçük kırpma boyutu (oran)
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
-export default function PreviewCanvas({ canvasRef, source, filter, crop, onCropChange }: Props) {
+export default function PreviewCanvas({ canvasRef, source, filter, crop, onCropChange, zoom = 1 }: Props) {
   // Overlay'i canvas'ın ekrandaki kutusuna hizalamak için
   const [box, setBox] = useState({ left: 0, top: 0, width: 0, height: 0 });
 
@@ -49,8 +50,9 @@ export default function PreviewCanvas({ canvasRef, source, filter, crop, onCropC
     target.setPointerCapture(e.pointerId);
 
     const onMove = (ev: PointerEvent) => {
-      const dx = (ev.clientX - start.x) / box.width;
-      const dy = (ev.clientY - start.y) / box.height;
+      // Yakınlaştırma CSS transform ile; ekrandaki fare hareketini ölçeksiz kutuya çevir
+      const dx = (ev.clientX - start.x) / zoom / box.width;
+      const dy = (ev.clientY - start.y) / zoom / box.height;
       const r = start.r;
       if (mode === "move") {
         onCropChange({ ...r, x: clamp(r.x + dx, 0, 1 - r.w), y: clamp(r.y + dy, 0, 1 - r.h) });
@@ -77,11 +79,33 @@ export default function PreviewCanvas({ canvasRef, source, filter, crop, onCropC
 
   return (
     <section className="relative flex min-h-64 flex-1 items-center justify-center overflow-hidden rounded-2xl border border-line bg-surface-1 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:16px_16px] p-3 shadow-inner">
+      {source && (
+        // Şimdilik sadece görsel (işlevsiz)
+        <div className="absolute top-3 right-3 z-10 flex gap-1">
+          {[
+            { label: "Sayfayı kopyala", d: <><rect x="8" y="8" width="13" height="13" rx="2" /><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" /></> },
+            { label: "Sayfa olarak dışa aktar", d: <path d="M12 3v12M7 8l5-5 5 5M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" /> },
+          ].map((b) => (
+            <button
+              key={b.label}
+              type="button"
+              title={b.label}
+              aria-label={b.label}
+              className="rounded-lg bg-surface-2/90 p-2 text-neutral-300 shadow transition-colors hover:bg-surface-3 hover:text-accent"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                {b.d}
+              </svg>
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="relative flex h-full w-full items-center justify-center transition-transform duration-150" style={{ transform: `scale(${zoom})` }}>
       <canvas
         ref={canvasRef}
         aria-label="Fotoğraf önizleme"
         style={{ filter }}
-        className={source ? "animate-fade-up max-h-full max-w-full rounded-md shadow-2xl shadow-black/60" : "hidden"}
+        className={source ? "animate-fade-up max-h-full max-w-full rounded-md bg-white shadow-2xl shadow-black/60" : "hidden"}
       />
       {!source && <p className="text-sm text-neutral-500">Önizleme burada görünecek</p>}
       {source && crop && (
@@ -110,6 +134,7 @@ export default function PreviewCanvas({ canvasRef, source, filter, crop, onCropC
           </div>
         </div>
       )}
+      </div>
     </section>
   );
 }
