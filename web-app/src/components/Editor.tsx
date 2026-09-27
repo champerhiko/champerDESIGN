@@ -58,6 +58,8 @@ export default function Editor({ projectId, initialFile, format = null, onBack }
   const [cropRect, setCropRect] = useState<CropRect | null>(null);
   const [saved, setSaved] = useState(true);
   const [zoom, setZoom] = useState(100);
+  // Aynı anda tek panel: "sidebar" = iç rayın (Düzenle/Ayarla/Filtreler) paneli, diğer değerler = sol menü öğesi
+  const [panel, setPanel] = useState<string | null>("sidebar");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // Açılışta yüklenen proje hemen yeniden kaydedilip tarihi güncellenmesin diye
   const lastSaved = useRef<string | null>(null);
@@ -207,7 +209,12 @@ export default function Editor({ projectId, initialFile, format = null, onBack }
             </div>
           </div>
         </main>
-        <EditorRail className="hidden lg:order-first lg:flex" onFile={loadFile} />
+        <EditorRail
+          className="hidden lg:order-first lg:flex"
+          onFile={loadFile}
+          openId={panel === "sidebar" ? null : panel}
+          onOpenChange={setPanel}
+        />
         <Sidebar
           className="order-2 lg:order-1"
           hasImage={!!source}
@@ -216,6 +223,8 @@ export default function Editor({ projectId, initialFile, format = null, onBack }
           onAdjustmentsChange={setAdjustments}
           preset={preset}
           onPresetChange={setPreset}
+          open={panel === "sidebar"}
+          onOpenChange={(o) => setPanel(o ? "sidebar" : null)}
           cropping={cropRect !== null}
           onRotate={() => addOp({ type: "rotate" })}
           onFlipH={() => addOp({ type: "flip", axis: "h" })}

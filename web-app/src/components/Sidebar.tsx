@@ -67,21 +67,23 @@ type Props = {
   onCropApply: () => void;
   onCropCancel: () => void;
   onReset: () => void;
+  // Panel açıklığı Editor'da tutulur (sol menü paneliyle aynı anda tek panel açık)
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 };
 
 export default function Sidebar(props: Props) {
-  const { className = "", hasImage, onReset } = props;
+  const { className = "", hasImage, onReset, open, onOpenChange } = props;
   const [tab, setTab] = useState<Tab>("adjust");
   // Sadece masaüstünde kapanabilir; mobilde panel hep açık (tek panel)
-  const [open, setOpen] = useState(true);
   const current = TABS.find((t) => t.id === tab)!;
 
   function select(id: Tab) {
     if (id === tab) {
-      setOpen((o) => !o);
+      onOpenChange(!open);
     } else {
       setTab(id);
-      setOpen(true);
+      onOpenChange(true);
     }
   }
 

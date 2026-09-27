@@ -79,21 +79,22 @@ const BOTTOM: Item[] = [
 ];
 
 // Canva tarzı editör menüsü (sadece masaüstü). Fotoğraf/Yüklemeler dosya seçtirir, diğerleri şimdilik "Yakında"
-export default function EditorRail({ className = "", onFile }: { className?: string; onFile: (f: File) => void }) {
-  const [open, setOpen] = useState<Item | null>(null);
+// Açık panel Editor'da tutulur: burada bir panel açılınca iç rayın paneli kapanır (ve tersi)
+type Props = { className?: string; onFile: (f: File) => void; openId: string | null; onOpenChange: (id: string | null) => void };
+
+export default function EditorRail({ className = "", onFile, openId, onOpenChange }: Props) {
   const [tip, setTip] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const open = [...MAIN, ...BOTTOM].find((i) => i.id === openId) ?? null;
 
   function click(item: Item) {
     if (item.upload) {
-      setOpen(null);
       fileRef.current?.click();
     } else if (item.locked) {
-      setOpen(null);
       setTip(item.id);
       setTimeout(() => setTip((t) => (t === item.id ? null : t)), 1500);
     } else {
-      setOpen((o) => (o?.id === item.id ? null : item));
+      onOpenChange(openId === item.id ? null : item.id);
     }
   }
 
@@ -134,7 +135,8 @@ export default function EditorRail({ className = "", onFile }: { className?: str
   };
 
   return (
-    <aside className={`relative z-20 w-[76px] shrink-0 flex-col gap-1 overflow-visible border-r border-line bg-background px-1.5 py-3 ${className}`}>
+    <aside className={`shrink-0 ${className}`}>
+      <div className="relative z-20 flex w-[76px] shrink-0 flex-col gap-1 border-r border-line bg-background px-1.5 py-3">
       {MAIN.map(button)}
       <hr className="mx-2 my-2 border-line" />
       {BOTTOM.map(button)}
@@ -149,14 +151,16 @@ export default function EditorRail({ className = "", onFile }: { className?: str
           if (file?.type.startsWith("image/")) onFile(file);
         }}
       />
+      </div>
 
+      {/* Akış içinde: iç rayın paneli kapandığı için yerini alır */}
       {open && (
-        <div className="animate-fade-up absolute top-0 left-full flex h-full w-72 flex-col border-r border-line bg-surface-1 p-4 shadow-2xl shadow-black/40">
+        <div className="animate-fade-up flex w-72 flex-col border-r border-line bg-surface-1 p-4">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-semibold">{open.label}</h2>
             <button
               type="button"
-              onClick={() => setOpen(null)}
+              onClick={() => onOpenChange(null)}
               aria-label="Paneli kapat"
               className="rounded-md p-1 text-neutral-400 transition-colors hover:bg-surface-3 hover:text-accent"
             >
