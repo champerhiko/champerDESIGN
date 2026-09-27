@@ -141,7 +141,7 @@ export default function Editor({ projectId, initialFile, onBack }: Props) {
   }
 
   return (
-    <div className="flex h-dvh flex-col bg-background text-foreground">
+    <div className="flex h-full flex-col bg-background text-foreground">
       <Header onHome={onBack}>
         {source && (
           <>
@@ -166,8 +166,8 @@ export default function Editor({ projectId, initialFile, onBack }: Props) {
         </button>
       </Header>
 
-      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-        <main className="order-1 flex min-h-0 flex-1 flex-col p-3 sm:p-6 lg:order-2">
+      <div className="flex min-h-0 flex-1 flex-col max-lg:overflow-y-auto lg:flex-row">
+        <main className="order-1 flex min-h-0 flex-1 flex-col p-3 max-lg:min-h-[340px] max-lg:flex-none sm:p-6 lg:order-2">
           {source ? (
             <PreviewCanvas
               canvasRef={canvasRef}

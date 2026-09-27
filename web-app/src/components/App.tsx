@@ -3,27 +3,48 @@
 import { useState } from "react";
 import Dashboard from "@/components/Dashboard";
 import Editor from "@/components/Editor";
+import ChamperAI from "@/components/ChamperAI";
+import GlobalNav, { type NavPage } from "@/components/GlobalNav";
 
-// Dashboard ile editör arasında sayfa içi geçiş (ayrı route yok)
-type View = { name: "dashboard" } | { name: "editor"; projectId: string | null; file: File | null };
+// Dashboard, editör ve ChamperAI arasında sayfa içi geçiş (ayrı route yok)
+type View =
+  | { name: "dashboard" }
+  | { name: "ai" }
+  | { name: "editor"; projectId: string | null; file: File | null; nonce: number };
+
+const ACTIVE: Record<View["name"], NavPage> = { dashboard: "projects", editor: "create", ai: "ai" };
 
 export default function App() {
   const [view, setView] = useState<View>({ name: "dashboard" });
 
-  if (view.name === "editor") {
-    return (
-      <Editor
-        key={view.projectId ?? "new"}
-        projectId={view.projectId}
-        initialFile={view.file}
-        onBack={() => setView({ name: "dashboard" })}
-      />
-    );
+  const openEditor = (projectId: string | null, file: File | null) =>
+    setView({ name: "editor", projectId, file, nonce: Date.now() });
+  const toDashboard = () => setView({ name: "dashboard" });
+
+  function navigate(page: NavPage) {
+    if (page === "create") openEditor(null, null);
+    else if (page === "projects") toDashboard();
+    else setView({ name: "ai" });
   }
+
   return (
-    <Dashboard
-      onOpen={(projectId) => setView({ name: "editor", projectId, file: null })}
-      onNew={(file) => setView({ name: "editor", projectId: null, file })}
-    />
+    <div className="flex h-dvh flex-col bg-background lg:flex-row">
+      <GlobalNav active={ACTIVE[view.name]} onNavigate={navigate} />
+      <div className="order-1 min-h-0 min-w-0 flex-1 lg:order-2">
+        {view.name === "editor" ? (
+          <Editor
+            // Oluştur'a tekrar basınca da temiz bir editör açılsın
+            key={view.projectId ?? `new-${view.nonce}`}
+            projectId={view.projectId}
+            initialFile={view.file}
+            onBack={toDashboard}
+          />
+        ) : view.name === "ai" ? (
+          <ChamperAI />
+        ) : (
+          <Dashboard onOpen={(id) => openEditor(id, null)} onNew={(file) => openEditor(null, file)} />
+        )}
+      </div>
+    </div>
   );
 }

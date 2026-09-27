@@ -50,7 +50,7 @@ export default function Dashboard({ onOpen, onNew }: Props) {
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <div className="flex h-full flex-col overflow-y-auto bg-background text-foreground">
       <Header />
       <input
         ref={fileRef}
