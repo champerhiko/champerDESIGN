@@ -13,13 +13,27 @@ import { getProject, makeThumbnail, saveProject, type Op } from "@/lib/projects"
 
 const INITIAL_CROP: CropRect = { x: 0.1, y: 0.1, w: 0.8, h: 0.8 };
 
-// Seçilen formatın oranında, görsele sığan en büyük ortalanmış kırpma çerçevesi
-function formatCrop(c: HTMLCanvasElement, f: Format): CropRect {
-  const target = f.w / f.h;
-  const w = Math.min(1, (c.height * target) / c.width);
-  const h = Math.min(1, c.width / target / c.height);
-  return { x: (1 - w) / 2, y: (1 - h) / 2, w, h };
+// Seçilen formatta beyaz kanvas; fotoğraf verilirse kanvası dolduracak şekilde (cover) ortalanıp çizilir
+function formatCanvas(f: Format, photo?: HTMLCanvasElement): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = f.w;
+  c.height = f.h;
+  const ctx = c.getContext("2d");
+  if (ctx) {
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, f.w, f.h);
+    if (photo) {
+      const s = Math.max(f.w / photo.width, f.h / photo.height);
+      const w = photo.width * s;
+      const h = photo.height * s;
+      ctx.drawImage(photo, (f.w - w) / 2, (f.h - h) / 2, w, h);
+    }
+  }
+  return c;
 }
+
+const canvasToBlob = (c: HTMLCanvasElement) =>
+  new Promise<Blob>((resolve, reject) => c.toBlob((b) => (b ? resolve(b) : reject(new Error("toBlob"))), "image/png"));
 
 function applyOp(c: HTMLCanvasElement, op: Op): HTMLCanvasElement {
   if (op.type === "rotate") return rotate90(c);
@@ -86,6 +100,16 @@ export default function Editor({ projectId, initialFile, format = null, onBack }
         setOriginal(canvas);
       } else if (initialFile) {
         loadFile(initialFile);
+      } else if (format) {
+        // Oluştur → boyut seçimi: fotoğraf beklemeden boş kanvasla yeni proje
+        const canvas = formatCanvas(format);
+        const blob = await canvasToBlob(canvas);
+        if (cancelled) return;
+        lastSaved.current = null;
+        setId(crypto.randomUUID());
+        setName(format.name);
+        setImage(blob);
+        setOriginal(canvas);
       }
     })();
     return () => {
@@ -121,12 +145,18 @@ export default function Editor({ projectId, initialFile, format = null, onBack }
   async function loadFile(file: File) {
     const canvas = await blobToCanvas(file);
     lastSaved.current = null;
+    setOps([]);
+    setCropRect(null);
+    if (format && id) {
+      // Boş kanvaslı projede fotoğraf aynı projenin kanvasına, kanvas boyutunda yerleşir
+      const composed = formatCanvas(format, canvas);
+      setImage(await canvasToBlob(composed));
+      setOriginal(composed);
+      return;
+    }
     setId(crypto.randomUUID());
     setName(file.name.replace(/\.[^.]+$/, ""));
     setImage(file);
-    setOps([]);
-    // Formatla açıldıysa o oranda kırpma önerilir; kullanıcı değiştirebilir ya da iptal edebilir
-    setCropRect(format ? formatCrop(canvas, format) : null);
     setOriginal(canvas);
   }
 
