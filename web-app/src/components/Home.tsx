@@ -40,8 +40,8 @@ export default function Home({ onNavigate, onOpen }: Props) {
     <div className="flex h-full flex-col overflow-y-auto bg-background text-foreground">
       <Header />
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
-        <section className="animate-fade-up relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#4c1d95] via-[#7c3aed] to-[#ffbd59] px-6 py-12 text-center shadow-xl sm:py-16">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,#ffffff26,transparent_45%)]" />
+        <section className="animate-fade-up relative overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-[#141210] via-[#2a2115] via-55% to-[#ffbd59]/75 px-6 py-12 text-center shadow-xl sm:py-16">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_90%,#ffbd5933,transparent_50%)]" />
           <h1 className="relative text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Champer Design&apos;a Hoş Geldin
           </h1>
