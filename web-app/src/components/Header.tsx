@@ -3,9 +3,8 @@ import type { ReactNode } from "react";
 export default function Header({ onHome, children }: { onHome?: () => void; children?: ReactNode }) {
   const logo = (
     <>
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent font-bold text-accent-ink shadow-[0_0_20px_-4px_#ffbd59]">
-        C
-      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element -- küçük statik logo */}
+      <img src="/logo.png" alt="" width={32} height={32} className="h-8 w-8 rounded-lg shadow-[0_0_20px_-4px_#ffbd59]" />
       <span className="text-lg font-semibold tracking-tight">Champer Design</span>
     </>
   );
