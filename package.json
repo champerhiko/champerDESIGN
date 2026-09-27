@@ -1,0 +1,20 @@
+{
+  "name": "photo-editor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Kişisel kullanım için fotoğraf düzenleme uygulaması + rakip analizi scraper'ı",
+  "type": "module",
+  "scripts": {
+    "scrape": "node scraper/scrape.js",
+    "dev": "npm --prefix web-app run dev",
+    "build": "npm --prefix web-app run build",
+    "start": "npm --prefix web-app run start"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "puppeteer": "^25.12.0"
+  }
+}

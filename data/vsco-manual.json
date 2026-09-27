@@ -1,0 +1,71 @@
+{
+  "siteName": "vsco",
+  "url": "https://www.vsco.co/",
+  "scrapedAt": "2026-09-26T22:51:49.010Z",
+  "title": "VSCO: Photo Editor + Filters, Community, and Business Tools",
+  "description": "",
+  "headings": [
+    "Everything a Photographer Needs",
+    "Unlock VSCO's Photography Ecosystem",
+    "Hone Your Craft",
+    "Find Your People",
+    "Meet Clients and Get Paid"
+  ],
+  "navLinks": [
+    "Everything a Photographer Needs",
+    "Unlock VSCO's Photography Ecosystem",
+    "Hone Your Craft",
+    "Find Your People",
+    "Meet Clients and Get Paid"
+  ],
+  "priceMentions": [],
+  "features": [
+    "Fotoğraf/video editör",
+    "AI photo editor",
+    "Community / blog / spaces",
+    "VSCO Capture (canlı presetler)",
+    "VSCO Canvas (moodboard)",
+    "VSCO Hub (client işbirliği)"
+  ],
+  "pricing": [
+    {
+      "plan": "Starter",
+      "price": "free",
+      "items": [
+        "15 preset",
+        "Topluluk paylaşımı"
+      ]
+    },
+    {
+      "plan": "Plus",
+      "price": null,
+      "items": [
+        "200+ preset",
+        "Mobil video düzenleme",
+        "Reklamsız"
+      ]
+    },
+    {
+      "plan": "Pro",
+      "price": null,
+      "mostPopular": true,
+      "items": [
+        "Stüdyo kalite düzenleme + preset",
+        "Sınırsız AI Lab ve galeri",
+        "Portfolyo sitesi"
+      ]
+    },
+    {
+      "plan": "VSCO One",
+      "price": null,
+      "items": [
+        "VSCO Workspace",
+        "Sınırsız client galerisi",
+        "Video eğitim kütüphanesi"
+      ]
+    }
+  ],
+  "uiNotes": [],
+  "presetParams": [],
+  "bodyText": ""
+}

@@ -1,0 +1,62 @@
+{
+  "siteName": "canva-pricing",
+  "url": "https://www.canva.com/tr_tr/ucretlendirme/",
+  "scrapedAt": "2026-09-26T22:51:49.010Z",
+  "title": "Canva Fiyatlandırması: Ücretsiz Canva, Canva Pro, Canva Business ve Şirketler İçin Canva planlarını karşılaştırın",
+  "description": "",
+  "headings": [],
+  "navLinks": [],
+  "priceMentions": [],
+  "features": [
+    "Sürükle-bırak editör",
+    "AI araçları (arka plan kaldırma, boyutlandırma, çeviri, Sihirli Katmanlar)",
+    "Sosyal medya planlama",
+    "Marka kiti",
+    "Ekip işbirliği"
+  ],
+  "pricing": [
+    {
+      "plan": "Ücretsiz",
+      "price": "0 TL/yıl",
+      "items": [
+        "1000+ belge türü",
+        "1.6M+ şablon",
+        "5GB depolama",
+        "20 AI kullanımı"
+      ]
+    },
+    {
+      "plan": "Pro",
+      "price": "1920 TL/yıl (kişi başı)",
+      "items": [
+        "3.6M+ şablon",
+        "141M+ premium içerik",
+        "5 Marka Kiti",
+        "100GB depolama",
+        "Ücretsizin 10 katı AI"
+      ]
+    },
+    {
+      "plan": "Business",
+      "price": "3400 TL/yıl (kişi başı)",
+      "items": [
+        "Ekip yönetimi",
+        "100 Marka Kiti",
+        "500GB depolama",
+        "Ücretsizin 20 katı AI"
+      ]
+    },
+    {
+      "plan": "Enterprise",
+      "price": "Özel fiyat",
+      "items": [
+        "SSO/SCIM",
+        "1000 Marka Kiti",
+        "1TB depolama"
+      ]
+    }
+  ],
+  "uiNotes": [],
+  "presetParams": [],
+  "bodyText": ""
+}
