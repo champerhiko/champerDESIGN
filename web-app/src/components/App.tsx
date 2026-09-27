@@ -4,25 +4,28 @@ import { useState } from "react";
 import Dashboard from "@/components/Dashboard";
 import Editor from "@/components/Editor";
 import ChamperAI from "@/components/ChamperAI";
+import Home from "@/components/Home";
 import GlobalNav, { type NavPage } from "@/components/GlobalNav";
 
-// Dashboard, editör ve ChamperAI arasında sayfa içi geçiş (ayrı route yok)
+// Ana Sayfa, dashboard, editör ve ChamperAI arasında sayfa içi geçiş (ayrı route yok)
 type View =
+  | { name: "home" }
   | { name: "dashboard" }
   | { name: "ai" }
   | { name: "editor"; projectId: string | null; file: File | null; nonce: number };
 
-const ACTIVE: Record<View["name"], NavPage> = { dashboard: "projects", editor: "create", ai: "ai" };
+const ACTIVE: Record<View["name"], NavPage> = { home: "home", dashboard: "projects", editor: "create", ai: "ai" };
 
 export default function App() {
-  const [view, setView] = useState<View>({ name: "dashboard" });
+  const [view, setView] = useState<View>({ name: "home" });
 
   const openEditor = (projectId: string | null, file: File | null) =>
     setView({ name: "editor", projectId, file, nonce: Date.now() });
   const toDashboard = () => setView({ name: "dashboard" });
 
   function navigate(page: NavPage) {
-    if (page === "create") openEditor(null, null);
+    if (page === "home") setView({ name: "home" });
+    else if (page === "create") openEditor(null, null);
     else if (page === "projects") toDashboard();
     else setView({ name: "ai" });
   }
@@ -39,6 +42,8 @@ export default function App() {
             initialFile={view.file}
             onBack={toDashboard}
           />
+        ) : view.name === "home" ? (
+          <Home onNavigate={navigate} onOpen={(id) => openEditor(id, null)} />
         ) : view.name === "ai" ? (
           <ChamperAI />
         ) : (

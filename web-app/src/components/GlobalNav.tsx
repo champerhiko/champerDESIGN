@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 
-export type NavPage = "create" | "projects" | "ai";
+export type NavPage = "home" | "create" | "projects" | "ai";
 
 const icon = (d: ReactNode) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
@@ -10,7 +10,13 @@ const icon = (d: ReactNode) => (
   </svg>
 );
 
-const ITEMS: { id: NavPage; label: string; icon: ReactNode }[] = [
+// Ana Sayfa'daki kısayol satırı da bu listeyi kullanır
+export const NAV_ITEMS: { id: NavPage; label: string; icon: ReactNode }[] = [
+  {
+    id: "home",
+    label: "Ana Sayfa",
+    icon: icon(<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" />),
+  },
   { id: "create", label: "Oluştur", icon: icon(<path d="M12 5v14M5 12h14" />) },
   {
     id: "projects",
@@ -35,7 +41,7 @@ const ITEMS: { id: NavPage; label: string; icon: ReactNode }[] = [
 export default function GlobalNav({ active, onNavigate }: { active: NavPage | null; onNavigate: (p: NavPage) => void }) {
   return (
     <nav className="order-2 flex shrink-0 justify-around gap-1 border-t border-line bg-background px-2 py-1.5 lg:order-1 lg:w-[84px] lg:flex-col lg:justify-start lg:gap-2 lg:border-t-0 lg:border-r lg:px-2 lg:py-4">
-      {ITEMS.map((item) => {
+      {NAV_ITEMS.map((item) => {
         const on = item.id === active;
         return (
           <button
