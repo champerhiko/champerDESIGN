@@ -7,9 +7,18 @@ import PreviewCanvas from "@/components/PreviewCanvas";
 import Sidebar from "@/components/Sidebar";
 import { buildFilter, DEFAULT_ADJUSTMENTS, type Adjustments, type PresetName } from "@/lib/filters";
 import { crop, flip, imageToCanvas, rotate90, type CropRect } from "@/lib/transform";
+import type { Format } from "@/components/CreatePicker";
 import { getProject, makeThumbnail, saveProject, type Op } from "@/lib/projects";
 
 const INITIAL_CROP: CropRect = { x: 0.1, y: 0.1, w: 0.8, h: 0.8 };
+
+// Seçilen formatın oranında, görsele sığan en büyük ortalanmış kırpma çerçevesi
+function formatCrop(c: HTMLCanvasElement, f: Format): CropRect {
+  const target = f.w / f.h;
+  const w = Math.min(1, (c.height * target) / c.width);
+  const h = Math.min(1, c.width / target / c.height);
+  return { x: (1 - w) / 2, y: (1 - h) / 2, w, h };
+}
 
 function applyOp(c: HTMLCanvasElement, op: Op): HTMLCanvasElement {
   if (op.type === "rotate") return rotate90(c);
@@ -33,10 +42,11 @@ function blobToCanvas(blob: Blob): Promise<HTMLCanvasElement> {
 type Props = {
   projectId: string | null;
   initialFile: File | null;
+  format?: Format | null;
   onBack: () => void;
 };
 
-export default function Editor({ projectId, initialFile, onBack }: Props) {
+export default function Editor({ projectId, initialFile, format = null, onBack }: Props) {
   const [id, setId] = useState(projectId);
   const [name, setName] = useState("foto");
   const [image, setImage] = useState<Blob | null>(null);
@@ -111,7 +121,8 @@ export default function Editor({ projectId, initialFile, onBack }: Props) {
     setName(file.name.replace(/\.[^.]+$/, ""));
     setImage(file);
     setOps([]);
-    setCropRect(null);
+    // Formatla açıldıysa o oranda kırpma önerilir; kullanıcı değiştirebilir ya da iptal edebilir
+    setCropRect(format ? formatCrop(canvas, format) : null);
     setOriginal(canvas);
   }
 
