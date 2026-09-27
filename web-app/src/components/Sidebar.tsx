@@ -72,34 +72,63 @@ type Props = {
 export default function Sidebar(props: Props) {
   const { className = "", hasImage, onReset } = props;
   const [tab, setTab] = useState<Tab>("adjust");
+  // Sadece masaüstünde kapanabilir; mobilde panel hep açık (tek panel)
+  const [open, setOpen] = useState(true);
   const current = TABS.find((t) => t.id === tab)!;
+
+  function select(id: Tab) {
+    if (id === tab) {
+      setOpen((o) => !o);
+    } else {
+      setTab(id);
+      setOpen(true);
+    }
+  }
 
   return (
     <aside className={`flex shrink-0 flex-col border-t border-line bg-surface-1 lg:flex-row lg:border-t-0 lg:border-r ${className}`}>
-      <nav className="flex shrink-0 justify-around gap-1 border-b border-line p-2 lg:w-20 lg:flex-col lg:justify-start lg:border-r lg:border-b-0">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            onClick={() => setTab(t.id)}
-            aria-pressed={tab === t.id}
-            className={`group flex flex-1 flex-col items-center gap-1 rounded-xl px-2 py-2 text-[11px] font-medium transition-colors lg:flex-none lg:py-3 ${
-              tab === t.id ? "text-accent" : "text-neutral-400 hover:text-foreground"
-            }`}
-          >
-            <span
-              className={`flex h-9 w-9 items-center justify-center rounded-lg transition-all ${
-                tab === t.id ? "bg-accent/15 ring-1 ring-accent" : "group-hover:bg-surface-3"
-              }`}
+      <nav className="flex shrink-0 justify-around gap-1 border-b border-line p-2 lg:w-20 lg:flex-col lg:justify-start lg:gap-2 lg:border-b-0">
+        {TABS.map((t) => {
+          // Seçili ama panel kapalıysa vurgu sadece mobilde (orada panel her zaman görünür)
+          const state = tab !== t.id ? "off" : open ? "on" : "mobile";
+          const hl = (styles: Record<"on" | "mobile", string>) => (state === "off" ? "" : styles[state]);
+          return (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => select(t.id)}
+              aria-pressed={tab === t.id && open}
+              aria-expanded={tab === t.id && open}
+              className={`group flex flex-1 flex-col items-center gap-1 rounded-xl px-2 py-2 text-[11px] font-medium text-neutral-400 transition-colors hover:text-foreground lg:flex-none lg:py-2.5 ${hl({
+                on: "text-accent hover:text-accent lg:bg-accent/10",
+                mobile: "max-lg:text-accent max-lg:hover:text-accent",
+              })}`}
             >
-              {t.icon}
-            </span>
-            {t.label}
-          </button>
-        ))}
+              <span
+                className={`flex h-9 w-9 items-center justify-center rounded-lg transition-all group-hover:bg-surface-3 group-active:scale-90 ${hl({
+                  on: "bg-accent text-accent-ink shadow-[0_0_16px_-4px_#ffbd59] group-hover:bg-accent-hover",
+                  mobile: "max-lg:bg-accent max-lg:text-accent-ink max-lg:group-hover:bg-accent-hover",
+                })}`}
+              >
+                {t.icon}
+              </span>
+              {t.label}
+            </button>
+          );
+        })}
       </nav>
 
-      <div className="max-h-[42vh] min-h-0 overflow-y-auto p-4 lg:max-h-none lg:w-72">
+      {/* Masaüstünde genişlik geçişiyle kayarak açılır/kapanır */}
+      <div
+        className={`min-h-0 min-w-0 overflow-hidden lg:border-line lg:transition-[width] lg:duration-300 lg:ease-out ${
+          open ? "lg:w-80 lg:border-l" : "lg:w-0"
+        }`}
+      >
+      <div
+        className={`max-h-[42vh] overflow-y-auto p-4 lg:h-full lg:max-h-none lg:w-80 lg:transition-transform lg:duration-300 lg:ease-out ${
+          open ? "" : "lg:-translate-x-full"
+        }`}
+      >
         <div key={tab} className="animate-fade-up">
           <div className="mb-4 flex items-center justify-between">
             <div>
@@ -124,6 +153,7 @@ export default function Sidebar(props: Props) {
           {tab === "adjust" && <AdjustTools {...props} />}
           {tab === "filters" && <FilterTools {...props} />}
         </div>
+      </div>
       </div>
     </aside>
   );
